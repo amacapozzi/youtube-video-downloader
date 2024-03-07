@@ -1,10 +1,5 @@
 "use client";
-
-import { useEffect } from "react";
 import { Badge } from "./ui/badge";
-import { resolve } from "path";
-import { v4 as uuidv4 } from 'uuid';
-import { tryDownloadVideo } from "@/utils/ytdl-core.utils";
 
 interface VideoContainerProps {
   title: string;
@@ -19,27 +14,6 @@ export const VideoContainer: React.FC<VideoContainerProps> = ({
   iframeUrl,
   videoUrl,
 }) => {
-  useEffect(() => {
-
-    async function download() {
-
- 
-      await tryDownloadVideo(videoUrl, "a");
-
-      const response = await fetch("/api/download/video");
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "";
-      link.click();
-      window.URL.revokeObjectURL(url);
-    }
-    download();
-
-  }, []);
-
   return (
     <div>
       {keywords && (

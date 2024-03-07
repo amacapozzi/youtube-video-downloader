@@ -3,11 +3,8 @@ import { useState } from "react";
 import { VideoInputUrl } from "@/components/Input";
 import { Button } from "@/components/ui/button";
 import { VideoContainer } from "@/components/video.container";
-import {
-  isValidVideo,
-  getVideoInfo,
-  tryDownloadVideo,
-} from "@/utils/ytdl-core.utils";
+import { useDownload } from "@/hook/useDownload";
+import { isValidVideo, getVideoInfo } from "@/utils/ytdl-core.utils";
 import { VideoInfo } from "@/types/video";
 import { Suspense } from "react";
 import DownloadSkeleton from "@/components/download.skeleton";
@@ -21,6 +18,8 @@ export default function Home() {
 
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const [videoUrl, setVideoUrl] = useState("");
+
+  const { error, fetchVideo, loading } = useDownload();
 
   const onChange = (value: string) => {
     setVideoUrl(value);
@@ -40,6 +39,8 @@ export default function Home() {
       keywords: videoInfo.videoDetails.keywords as string[],
       iframeUrl: videoInfo.videoDetails.embed.iframeUrl,
     });
+
+    await fetchVideo(videoUrl);
   };
 
   const resetValues = () => {
@@ -57,7 +58,9 @@ export default function Home() {
         </h1>
         <div className="flex flex-row items-center gap-3 my-5">
           <VideoInputUrl videoUrl={videoUrl} onChange={onChange} />
-          <Button onClick={downloadVideo}>Download</Button>
+          <Button onClick={downloadVideo}>
+            {loading ? "Downloading..." : "Download"}
+          </Button>
         </div>
         <div>
           {isValid ? (

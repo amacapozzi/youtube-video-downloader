@@ -13,21 +13,8 @@ export const getVideoInfo = async (
 ): Promise<ytdl.videoInfo> => {
   return await ytdl.getBasicInfo(videoUrl);
 };
-export const tryDownloadVideo = async (videoUrl: string, id: string) => {
-  try {
-    const videoInfo = await getVideoInfo(videoUrl);
 
-    if (videoInfo) {
-      const { title } = videoInfo.videoDetails;
-      const filePath = path.join(process.cwd(), "videos", "video.mp4");
-      const writeStream = fs.createWriteStream(filePath);
-
-      await new Promise((resolve, reject) => {
-        ytdl(videoUrl)
-          .pipe(writeStream)
-          .on("finish", resolve)
-          .on("error", reject);
-      });
-    }
-  } catch (error) {}
-};
+export const getVideoId = async (videoUrl: string): Promise<string> => {
+const videoId = await ytdl.getVideoID(videoUrl);
+  return videoId;
+} 
